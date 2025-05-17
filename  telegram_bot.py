@@ -8,32 +8,24 @@ import time
 from dotenv import load_dotenv
 load_dotenv()
 
-# Initialize Groq client
-# You will need to set your GROQ_API_KEY as an environment variable
+
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 groq_client = groq.Client(api_key=os.environ.get("GROQ_API_KEY"))
-GROQ_MODEL = "llama3-8b-8192"  # You can change this to any supported Groq model
+GROQ_MODEL = "llama3-8b-8192" 
 
-# Store conversation history for each user
 conversation_history = defaultdict(list)
-# Time window for conversation context (in seconds)
-CONVERSATION_EXPIRY = 3600  # 1 hour
+CONVERSATION_EXPIRY = 3600 
 
-# Bot personality and context
 SYSTEM_PROMPT = """You are Sigmoydbot, a helpful and conversational AI assistant. 
 You have a friendly personality and maintain context through conversations.
 You provide concise but thoughtful responses and can discuss a wide range of topics.
-You should remember information shared by users during the conversation."""
+You should remember information shared by users during the conversation and give short replies talk like a person."""
 
-# Define a function to check if the message mentions the bot
 def is_bot_mentioned(text, bot_username):
-    # Case insensitive check for mentions like @Sigmoydbot or @sigmoydbot
     pattern = f"@{re.escape(bot_username)}"
     return bool(re.search(pattern, text, re.IGNORECASE))
 
-# Manage conversation history
 def update_conversation(user_id, role, content):
-    # Add the new message to the conversation
     conversation_history[user_id].append({
         "role": role,
         "content": content,
